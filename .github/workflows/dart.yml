@@ -31,7 +31,7 @@ jobs:
           name: Knitly-iOS-IPA
           path: build/ios/ipa/*.ipa
 
-  build:
+  build-apk:
     runs-on: ubuntu-latest
     env:
       FLUTTER_SUPPRESS_ANALYTICS: true
