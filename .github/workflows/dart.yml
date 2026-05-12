@@ -39,9 +39,6 @@ jobs:
         with:
           name: Knitly-iOS-IPA
           path: build/ios/ipa/*.ipa
-
-  build-android:
-
   build:
     runs-on: ubuntu-latest
     env:
