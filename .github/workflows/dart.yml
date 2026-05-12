@@ -40,3 +40,5 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+- name: iOS Build Action (ad-hoc)
+  uses: allen6131/ios-build-action@v0.4.5
