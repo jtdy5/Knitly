@@ -24,3 +24,14 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+- name: Set Default Scheme
+  run: |
+    if ! xcodebuild -list -json > /dev/null 2>&1; then
+      echo "No Xcode project found. Skipping build."
+      exit 0
+    fi
+    scheme_list=$(xcodebuild -list -json | tr -d "\n")
+    default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+    echo $default | cat >default
+    echo Using default scheme: $default
