@@ -11,6 +11,7 @@ jobs:
     env:
       FLUTTER_SUPPRESS_ANALYTICS: true
     steps:
+      - uses: actions/checkout@v4
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Flutter
@@ -31,12 +32,12 @@ jobs:
         with:
           name: Knitly-iOS-IPA
           path: build/ios/ipa/*.ipa
-
   build-apk:
     runs-on: ubuntu-latest
     env:
       FLUTTER_SUPPRESS_ANALYTICS: true
     steps:
+      - uses: actions/checkout@v4
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install Flutter
