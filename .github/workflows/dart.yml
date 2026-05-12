@@ -11,6 +11,8 @@ jobs:
     env:
       FLUTTER_SUPPRESS_ANALYTICS: true
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -35,6 +37,8 @@ jobs:
     env:
       FLUTTER_SUPPRESS_ANALYTICS: true
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
