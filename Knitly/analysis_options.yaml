@@ -1,0 +1,9 @@
+# This file configures the static analysis of your Dart code.
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Add specific rules you want to enforce for Knitly here
+    - prefer_const_constructors
+    - prefer_final_locals
+    - avoid_print
