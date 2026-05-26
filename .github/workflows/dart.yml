@@ -1,24 +1,33 @@
 name: iOS-ipa-build
-
-on:
+on: 
   workflow_dispatch:
+
+# CRITICAL: Gives the runner permission to create a release and upload the IPA file
+permissions:
+  contents: write
 
 jobs:
   build-ios:
     name: 🎉 iOS Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          architecture: x64
-      - run: flutter pub get
-      
+          # Removed architecture: x64 to let it use native ARM64 on newer macOS runners
+          # Tip: If your project relies on an older Flutter version, add:
+          # flutter-version: '3.x.x' 
 
-      - run: pod repo update
-        working-directory: ios
+      - run: flutter pub get 
+
+      # Safely cleans and updates CocoaPods dependencies inside the iOS environment
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod repo update
+          pod install
 
       - run: flutter build ios --release --no-codesign
 
