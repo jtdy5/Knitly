@@ -2,7 +2,6 @@ name: iOS-ipa-build
 on: 
   workflow_dispatch:
 
-# CRITICAL: Gives the runner permission to create a release and upload the IPA file
 permissions:
   contents: write
 
@@ -16,21 +15,14 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # Removed architecture: x64 to let it use native ARM64 on newer macOS runners
-          # Tip: If your project relies on an older Flutter version, add:
-          # flutter-version: '3.x.x' 
 
+      # 1. Get your Flutter dependencies
       - run: flutter pub get 
 
-      # Safely cleans and updates CocoaPods dependencies inside the iOS environment
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod repo update
-          pod install
-
+      # 2. Bypass manual pod commands! Flutter build ios handles pods automatically.
       - run: flutter build ios --release --no-codesign
 
+      # 3. Package into an IPA
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
 
@@ -41,6 +33,7 @@ jobs:
         run: zip -qq -r -9 FlutterIpaExport.ipa Payload
         working-directory: build/ios/iphoneos
 
+      # 4. Upload to GitHub Releases
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
