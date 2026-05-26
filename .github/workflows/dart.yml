@@ -2,6 +2,11 @@ name: iOS-ipa-build
 on: 
   workflow_dispatch:
 
+# Forces GitHub Actions to safely use Node 24 and silences the deprecation warning
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# Grants permission to create the GitHub Release and upload your IPA file
 permissions:
   contents: write
 
@@ -16,13 +21,11 @@ jobs:
         with:
           channel: 'stable'
 
-      # 1. Get your Flutter dependencies
       - run: flutter pub get 
 
-      # 2. Bypass manual pod commands! Flutter build ios handles pods automatically.
+      # Flutter automatically handles the CocoaPods environment and Podfile generation here
       - run: flutter build ios --release --no-codesign
 
-      # 3. Package into an IPA
       - run: mkdir Payload
         working-directory: build/ios/iphoneos
 
@@ -33,7 +36,6 @@ jobs:
         run: zip -qq -r -9 FlutterIpaExport.ipa Payload
         working-directory: build/ios/iphoneos
 
-      # 4. Upload to GitHub Releases
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
