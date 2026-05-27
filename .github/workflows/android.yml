@@ -1,0 +1,50 @@
+name: Android-APK-Build
+on: 
+  workflow_dispatch:
+
+# Keeping our Node 24 fix from earlier!
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# Grants permission to create the GitHub Release and upload your APK
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    name: 🤖 Android APK Build
+    # Ubuntu is much faster (and cheaper!) for Android builds than macOS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # Android builds require Java to compile. Zulu 17 is the standard for modern Flutter.
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get 
+
+      # Builds the APK. No CocoaPods needed here!
+      - name: Build APK
+        run: flutter build apk --release
+
+      # Uploads the finished APK to your GitHub Releases
+      - name: Upload APK to Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          # This is the default path where Flutter saves the built APK
+          file: build/app/outputs/flutter-apk/app-release.apk
+          tag: v1.0-android
+          overwrite: true
+          body: "First Android Release"
