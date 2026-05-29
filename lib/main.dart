@@ -420,7 +420,7 @@ class ProjectNotifier extends StateNotifier<List<KnitProject>> {
                                         colorValue: c.colorValue,
                                         history: c.history,
                                         autoResetThreshold:
-                                              c.autoResetThreshold)
+                                            c.autoResetThreshold)
                                     : c)
                                 .toList())
                         : pt)
@@ -509,7 +509,7 @@ class ProjectNotifier extends StateNotifier<List<KnitProject>> {
                   shouldUpdate = true;
                 } else {
                   if ((c.linkedCounterId == triggerCounterId &&
-                       c.linkMode == 'sync') ||
+                          c.linkMode == 'sync') ||
                       (triggerCounter.linkedCounterId == c.id &&
                           triggerCounter.linkMode == 'sync') ||
                       (triggerCounter.linkedCounterId == c.id &&
@@ -625,7 +625,7 @@ class ProjectNotifier extends StateNotifier<List<KnitProject>> {
                                         linkMode: c.linkMode,
                                         history: c.history,
                                         autoResetThreshold:
-                                              c.autoResetThreshold)
+                                            c.autoResetThreshold)
                                     : c)
                                 .toList())
                         : pt)
@@ -676,12 +676,13 @@ class ProjectNotifier extends StateNotifier<List<KnitProject>> {
     save();
   }
 
-  // --- UPDATED ADD REMINDERS FUNCTION ---
+  // --- UPDATED PARSING LOGIC FOR REMINDERS ---
   void addReminders(String projId, String partId, String counterId,
       int startRow, String pattern,
       {int? recurringInterval}) {
     final lines = pattern.split('\n');
     final newMap = <int, String>{};
+    int trackingRow = startRow;
 
     if (recurringInterval != null && recurringInterval > 0) {
       for (int r = startRow; r <= 1000; r += recurringInterval) {
@@ -689,14 +690,20 @@ class ProjectNotifier extends StateNotifier<List<KnitProject>> {
             lines.firstWhere((l) => l.trim().isNotEmpty, orElse: () => "");
       }
     } else {
-      int trackingRow = startRow;
       for (var line in lines) {
-        if (line.trim().isEmpty) {
+        final trimmedLine = line.trim();
+        if (trimmedLine.isEmpty) continue;
+
+        // Skip lines that just say "Row X" or "Round X" without affecting the counter
+        final skipMatch =
+            RegExp(r'^(?:Row|Round)\s+\d+$', caseSensitive: false)
+                .hasMatch(trimmedLine);
+
+        if (skipMatch) {
           continue;
         }
-        
-        // Directly map the entire text line to the tracking row sequentially
-        newMap[trackingRow] = line.trim();
+
+        newMap[trackingRow] = trimmedLine;
         trackingRow++;
       }
     }
@@ -1936,7 +1943,485 @@ class _PartDetailScreenState extends ConsumerState<PartDetailScreen> {
     String selectedMode = 'follow';
     final mainCounter = all.first;
     showAdaptiveDialog(
-        context: context,
-        builder: (c) => StatefulBuilder(
-              builder: (context, setDimState) => AlertDialog.adaptive(
-                title
+      context: context,
+      builder: (c) => StatefulBuilder(
+        builder: (context, setDimState) => AlertDialog.adaptive(
+          title: const Text("Link to Global Counter"),
+          content: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButtonFormField<String?>(
+                  value: selectedLink,
+                  decoration: const InputDecoration(
+                      labelText: "Link Target Destination",
+                      border: OutlineInputBorder()),
+                  items: [
+                    DropdownMenuItem(
+                        value: mainCounter.id,
+                        child: Text("Connect to: ${mainCounter.name}")),
+                  ],
+                  onChanged: (val) => setDimState(() => selectedLink = val),
+                ),
+                if (selectedLink != null) ...[
+                  const SizedBox(height: 16),
+                  const Text("Select Link Behavior Direction:",
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade200),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        RadioListTile<String>(
+                            title: const Text("One-Way Push Link"),
+                            subtitle: Text(
+                                "Advancing this custom counter updates '${mainCounter.name}', but changing '${mainCounter.name}' leaves this custom counter alone."),
+                            value: 'follow',
+                            groupValue: selectedMode,
+                            onChanged: (v) =>
+                                setDimState(() => selectedMode = v!)),
+                        const Divider(height: 1),
+                        RadioListTile<String>(
+                            title: const Text("Two-Way Identical Sync"),
+                            subtitle: Text(
+                                "Lock both counters together. Changing either one perfectly mirrors the row value across both at the same time."),
+                            value: 'sync',
+                            groupValue: selectedMode,
+                            onChanged: (v) =>
+                                setDimState(() => selectedMode = v!)),
+                      ],
+                    ),
+                  ),
+                ]
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () {
+                  ref.read(projectProvider.notifier).linkCounter(
+                      widget.projectId,
+                      widget.partId,
+                      counter.id,
+                      selectedLink,
+                      selectedLink == null ? 'none' : selectedMode);
+                  Navigator.pop(context);
+                },
+                child: const Text("Link Counter"))
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showColorCustomizerDialog(BuildContext context, KnitCounter counter) {
+    final hexController = TextEditingController(
+        text: (counter.colorValue ?? 0xFF64B5F6)
+            .toRadixString(16)
+            .toUpperCase()
+            .padLeft(8, '0'));
+    final presets = [
+      0xFF64B5F6,
+      0xFF81C784,
+      0xFFFFCA28,
+      0xFFBA68C8,
+      0xFFFF8A65,
+      0xFFF06292,
+      0xFF4DB6AC,
+      0xFFA1887F
+    ];
+    int currentTempColor = counter.colorValue ?? 0xFF64B5F6;
+
+    showAdaptiveDialog(
+      context: context,
+      builder: (c) => StatefulBuilder(
+        builder: (context, setModalState) => AlertDialog.adaptive(
+          title: const Text("Color Dropper & Hex Picker"),
+          content: Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Color(currentTempColor),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.black26))),
+                  const SizedBox(height: 16),
+                  const Text("Quick Presets Palette",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: presets
+                        .map((colorInt) => GestureDetector(
+                              onTap: () {
+                                setModalState(() {
+                                  currentTempColor = colorInt;
+                                  hexController.text = colorInt
+                                      .toRadixString(16)
+                                      .toUpperCase()
+                                      .padLeft(8, '0');
+                                });
+                              },
+                              child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                      color: Color(colorInt),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: currentTempColor == colorInt
+                                              ? Colors.black
+                                              : Colors.transparent,
+                                          width: 2))),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: hexController,
+                    decoration: const InputDecoration(
+                        labelText: "Custom Hex Color Code",
+                        hintText: "e.g. FF64B5F6 or 64B5F6",
+                        border: OutlineInputBorder()),
+                    onChanged: (val) {
+                      String clean = val.trim().replaceAll("#", "");
+                      if (clean.length == 6) {
+                        clean = "FF$clean";
+                      }
+                      final parsed = int.tryParse(clean, radix: 16);
+                      if (parsed != null) {
+                        setModalState(() => currentTempColor = parsed);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () {
+                  ref.read(projectProvider.notifier).setCounterColor(
+                      widget.projectId,
+                      widget.partId,
+                      counter.id,
+                      currentTempColor);
+                  Navigator.pop(context);
+                },
+                child: const Text("Apply Hue"))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- REMINDER SETTINGS SHEET ---
+
+class ReminderSettingsSheet extends ConsumerStatefulWidget {
+  final String projectId;
+  final String partId;
+  final String counterId;
+  const ReminderSettingsSheet(
+      {super.key,
+      required this.projectId,
+      required this.partId,
+      required this.counterId});
+  @override
+  ConsumerState<ReminderSettingsSheet> createState() =>
+      _ReminderSettingsSheetState();
+}
+
+class _ReminderSettingsSheetState extends ConsumerState<ReminderSettingsSheet> {
+  final _startRowController = TextEditingController(text: "1");
+  final _patternController = TextEditingController();
+  final _recurringController = TextEditingController();
+  int _selectedModeIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final project =
+        ref.watch(projectProvider).firstWhere((p) => p.id == widget.projectId);
+    final part = project.parts.firstWhere((pt) => pt.id == widget.partId);
+    final counter = part.counters.firstWhere((c) => c.id == widget.counterId);
+
+    final sortedKeys = counter.reminders.keys.toList()..sort();
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16,
+          right: 16,
+          top: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Expanded(
+                child: Text("Reminders Management",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis),
+              ),
+              TextButton.icon(
+                onPressed: () => setState(() => _selectedModeIndex = 3),
+                icon: const Icon(Icons.list_alt),
+                label: Text("View Active (${counter.reminders.length})"),
+              )
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12)),
+            child: Row(
+              children: [
+                _tab(0, "Single"),
+                _tab(1, "Repeat"),
+                _tab(2, "Paste"),
+                _tab(3, "Manage"),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          if (_selectedModeIndex == 0) ...[
+            TextField(
+                controller: _startRowController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                    labelText: "Target Row", border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(
+                controller: _patternController,
+                decoration: const InputDecoration(
+                    labelText: "Reminder Alert Instruction Text",
+                    border: OutlineInputBorder())),
+          ] else if (_selectedModeIndex == 1) ...[
+            Row(
+              children: [
+                Expanded(
+                    child: TextField(
+                        controller: _startRowController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: "Starting Row",
+                            border: OutlineInputBorder()))),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: TextField(
+                        controller: _recurringController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: "Interval (Every X Rows)",
+                            border: OutlineInputBorder()))),
+              ],
+            ),
+            const SizedBox(height: 12),
+            TextField(
+                controller: _patternController,
+                decoration: const InputDecoration(
+                    labelText: "Instruction Loop Note",
+                    border: OutlineInputBorder())),
+          ] else if (_selectedModeIndex == 2) ...[
+            TextField(
+                controller: _startRowController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                    labelText: "Parse Base Row Index",
+                    border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(
+                controller: _patternController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                    labelText: "Paste Script (Row 1: Clear line...)",
+                    alignLabelWithHint: true,
+                    border: OutlineInputBorder())),
+          ] else ...[
+            counter.reminders.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                        child:
+                            Text("No layout modifications exist currently.")))
+                : Container(
+                    constraints: const BoxConstraints(maxHeight: 220),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: sortedKeys.map((rowKey) {
+                        return ListTile(
+                          dense: true,
+                          title: Text("Row $rowKey",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(counter.reminders[rowKey] ?? ""),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  icon: const Icon(Icons.edit_note,
+                                      color: Colors.blue),
+                                  onPressed: () => _editSingleInlineReminder(
+                                      context,
+                                      rowKey,
+                                      counter.reminders[rowKey] ?? "")),
+                              IconButton(
+                                  icon: const Icon(Icons.delete_sweep_outlined,
+                                      color: Colors.red),
+                                  onPressed: () => ref
+                                      .read(projectProvider.notifier)
+                                      .updateSingleReminder(
+                                          widget.projectId,
+                                          widget.partId,
+                                          widget.counterId,
+                                          rowKey,
+                                          null)),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  )
+          ],
+          if (_selectedModeIndex != 3) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary),
+                onPressed: () {
+                  final start = int.tryParse(_startRowController.text) ?? 1;
+                  final interval = _selectedModeIndex == 1
+                      ? int.tryParse(_recurringController.text)
+                      : null;
+                  ref.read(projectProvider.notifier).addReminders(
+                      widget.projectId,
+                      widget.partId,
+                      widget.counterId,
+                      start,
+                      _patternController.text,
+                      recurringInterval: interval);
+                  Navigator.pop(context);
+                },
+                child: const Text("Commit Rule Settings"),
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  void _editSingleInlineReminder(
+      BuildContext context, int rowKey, String existingText) {
+    final inlineController = TextEditingController(text: existingText);
+    showAdaptiveDialog(
+      context: context,
+      builder: (c) => AlertDialog.adaptive(
+        title: Text("Modify Rule (Row $rowKey)"),
+        content: Material(
+            color: Colors.transparent,
+            child: TextField(
+                controller: inlineController,
+                decoration:
+                    const InputDecoration(border: OutlineInputBorder()))),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel")),
+          TextButton(
+            onPressed: () {
+              ref.read(projectProvider.notifier).updateSingleReminder(
+                  widget.projectId,
+                  widget.partId,
+                  widget.counterId,
+                  rowKey,
+                  inlineController.text);
+              Navigator.pop(context);
+            },
+            child: const Text("Update"),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _tab(int index, String label) {
+    final isSel = _selectedModeIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedModeIndex = index),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+              color: isSel ? Colors.white : Colors.transparent,
+              borderRadius: BorderRadius.circular(8)),
+          child: Text(label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
+        ),
+      ),
+    );
+  }
+}
+
+// --- REUSABLE TEXT ENTRY MODAL ---
+
+void _showRenameDialog(BuildContext context, String title, String hintText,
+    Function(String) onSave) {
+  final controller = TextEditingController();
+  showAdaptiveDialog(
+    context: context,
+    builder: (ctx) => AlertDialog.adaptive(
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      content: Material(
+        color: Colors.transparent,
+        child: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+                hintText: hintText, border: const OutlineInputBorder())),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+        TextButton(
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                onSave(controller.text.trim());
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text("Save")),
+      ],
+    ),
+  );
+}
