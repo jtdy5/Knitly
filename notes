@@ -1,0 +1,369 @@
+NotAllowedError, Failed to execute 'request' on 'WakeLock': Access to Screen Wake Lock features is disallowed by permissions policy
+
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+
+The following _TypeError was thrown building:
+
+TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+
+When the exception was thrown, this was the stack:
+
+dart:sdk_internal 4469:11                                           throw_
+
+dart:sdk_internal 16143:15                                          _generalNullableAsCheckImplementation
+
+dart:sdk_internal 16085:24                                          _installSpecializedAsCheck
+
+packages/knitly/main.dart 2027:41                                   [_buildSecondaryTracker]
+
+packages/knitly/main.dart 1766:48                                   
+
+packages/flutter/src/widgets/scroll_delegate.dart 498:22            build
+
+packages/flutter/src/widgets/sliver.dart 969:18                     [_build]
+
+packages/flutter/src/widgets/sliver.dart 984:55                     
+
+packages/flutter/src/widgets/framework.dart 3046:11                 buildScope
+
+packages/flutter/src/widgets/sliver.dart 975:5                      createChild
+
+packages/flutter/src/rendering/sliver_multi_box_adaptor.dart 372:9  
+
+packages/flutter/src/rendering/object.dart 2885:9                   
+
+packages/flutter/src/rendering/object.dart 1209:7                   [_enableMutationsToDirtySubtrees]
+
+packages/flutter/src/rendering/object.dart 2884:7                   invokeLayoutCallback
+
+packages/flutter/src/rendering/sliver_multi_box_adaptor.dart 360:5  [_createOrObtainChild]
+
+packages/flutter/src/rendering/sliver_multi_box_adaptor.dart 460:5  addInitialChild
+
+packages/flutter/src/rendering/sliver_grid.dart 624:12              performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/sliver_padding.dart 133:5            performLayout
+
+packages/flutter/src/rendering/sliver_padding.dart 371:11           performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/viewport.dart 611:12                 layoutChildSequence
+
+packages/flutter/src/rendering/viewport.dart 1956:12                [_attemptLayout]
+
+packages/flutter/src/rendering/viewport.dart 1910:20                performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/custom_paint.dart 574:11             performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/shifted_box.dart 243:5               performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/layout_helper.dart 62:10             layoutChild
+
+dart:sdk_internal 4514:46                                           tear
+
+packages/flutter/src/rendering/flex.dart 1161:28                    [_computeSizes]
+
+packages/flutter/src/rendering/flex.dart 1255:32                    performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/shifted_box.dart 243:5               performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/widgets/single_child_scroll_view.dart 501:7    performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/custom_paint.dart 574:11             performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/layout_helper.dart 62:10             layoutChild
+
+dart:sdk_internal 4514:46                                           tear
+
+packages/flutter/src/rendering/stack.dart 646:43                    [_computeSize]
+
+packages/flutter/src/rendering/stack.dart 673:12                    performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/custom_layout.dart 180:10            layoutChild
+
+packages/flutter/src/material/scaffold.dart 1118:7                  performLayout
+
+packages/flutter/src/rendering/custom_layout.dart 249:7             [_callPerformLayout]
+
+packages/flutter/src/rendering/custom_layout.dart 419:5             performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/proxy_box.dart 1483:11               performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 3855:14               performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/widgets/overlay.dart 1085:12                   layoutChild
+
+packages/flutter/src/widgets/overlay.dart 1431:9                    performLayout
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/proxy_box.dart 115:10                
+
+packages/flutter/src/rendering/object.dart 2766:7                   layout
+
+packages/flutter/src/rendering/layout_helper.dart 62:10             layoutChild
+
+dart:sdk_internal 4514:46                                           tear
+
+packages/flutter/src/rendering/stack.dart 646:43                    [_computeSize]
+
+packages/flutter/src/rendering/stack.dart 673:12                    performLayout
+
+packages/flutter/src/rendering/object.dart 2614:7                   [_layoutWithoutResize]
+
+packages/flutter/src/rendering/object.dart 1160:17                  flushLayout
+
+packages/flutter/src/rendering/object.dart 1173:14                  flushLayout
+
+packages/flutter/src/rendering/binding.dart 629:5                   drawFrame
+
+packages/flutter/src/widgets/binding.dart 1242:13                   drawFrame
+
+packages/flutter/src/rendering/binding.dart 495:5                   [_handlePersistentFrameCallback]
+
+dart:sdk_internal 4514:46                                           tear
+
+packages/flutter/src/scheduler/binding.dart 1438:7                  [_invokeFrameCallback]
+
+packages/flutter/src/scheduler/binding.dart 1351:9                  handleDrawFrame
+
+packages/flutter/src/scheduler/binding.dart 1204:5                  [_handleDrawFrame]
+
+dart:sdk_internal 4514:46                                           tear
+
+dart:sdk_internal 210455:7                                          invoke
+
+dart:sdk_internal 180525:15                                         invokeOnDrawFrame
+
+dart:sdk_internal 175264:51                                         [_renderFrame]
+
+dart:sdk_internal 175224:29                                         
+
+dart:sdk_internal 44701:59                                          runUnary
+
+dart:sdk_internal 44671:34                                          
+
+dart:sdk_internal 70647:14                                          _callDartFunctionFast1
+
+NotAllowedError, Failed to execute 'request' on 'WakeLock': Access to Screen Wake Lock features is disallowed by permissions policy
+
+dart:sdk_internal 70565:22                                          ret
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+NotAllowedError, Failed to execute 'request' on 'WakeLock': Access to Screen Wake Lock features is disallowed by permissions policy
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
+Another exception was thrown: TypeError: Instance of '_Type': type '_Type' is not a subtype of type 'TextAlign?'
+
